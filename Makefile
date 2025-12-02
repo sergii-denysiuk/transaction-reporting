@@ -18,11 +18,11 @@ build: ## Build Docker images
 	docker compose build
 
 .PHONY: up
-up: ## Start services in the foreground
+up: build ## Start services in the foreground
 	docker compose up
 
 .PHONY: up-detached
-up-detached: ## Start services in detached mode
+up-detached: build ## Start services in detached mode
 	docker compose up -d
 
 .PHONY: down
@@ -40,10 +40,6 @@ migrate: ## Apply database migrations
 .PHONY: makemigrations
 makemigrations: ## Create new database migrations
 	docker compose exec app python manage.py makemigrations
-
-.PHONY: test
-test: ## Run tests
-	docker compose exec app pytest
 
 .PHONY: bash
 bash: ## Open a bash shell in the app container
@@ -64,6 +60,10 @@ db-bash: ## Open a bash shell in the database container
 .PHONY: db-shell
 db-shell: ## Open a psql shell in the database container
 	docker compose exec db psql -U postgres
+
+.PHONY: test
+test: ## Run tests
+	docker compose run --rm app pytest
 
 # Dependency management strictly via Docker (Poetry inside container)
 .PHONY: poetry-add
