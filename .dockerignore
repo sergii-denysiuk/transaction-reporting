@@ -1,0 +1,47 @@
+# Exclude VCS and editor files
+.git
+.gitignore
+.idea/
+.vscode/
+.DS_Store
+
+# Python cache and build artifacts
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.so
+.pytest_cache/
+.mypy_cache/
+
+# Virtual environments
+venv/
+.env/
+.env*
+.venv/
+
+# Dist/build
+build/
+dist/
+.eggs/
+*.egg-info/
+
+# Local environments or configs not needed in image
+envs/
+
+# Docker-related
+Dockerfile
+
+# Logs
+*.log
+
+# Coverage and reports
+htmlcov/
+.coverage*
+
+# Misc
+*.swp
+*.swo
+
+# Keep dependency manifests (pyproject.toml, poetry.lock) and app source included by not listing them here.
+
