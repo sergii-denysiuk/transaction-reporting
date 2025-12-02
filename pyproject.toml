@@ -1,0 +1,24 @@
+[tool.poetry]
+name = "transaction-reporting"
+version = "0.1.0"
+description = "Django backend for transaction reporting and aggregation."
+authors = ["Sergii Denysiuk <sergii.denysiuk@gmail.com>"]
+readme = "README.md"
+package-mode = false
+
+[tool.poetry.dependencies]
+python = "^3.13"
+Django = "^5.2.8"
+djangorestframework = "^3.16"
+psycopg = {extras = ["binary"], version = "3.3.0"}
+django-environ = "^0.12.0"
+
+[tool.poetry.group.dev.dependencies]
+pytest = "^9.0.1"
+pytest-django = "^4.11.1"
+black = "^25.11.0"
+isort = "^7.0.0"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

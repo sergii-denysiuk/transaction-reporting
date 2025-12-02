@@ -1,0 +1,27 @@
+services:
+  db:
+    image: postgres:18
+    container_name: transaction_reporting_db
+    env_file:
+      - ./envs/.env
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql
+
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: transaction_reporting_app
+    env_file:
+      - ./envs/.env
+    depends_on:
+      - db
+    ports:
+      - "8000:8000"
+    volumes:
+      - .:/app  # for reload on code changes
+
+volumes:
+  postgres_data:
