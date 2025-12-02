@@ -16,8 +16,34 @@ django-environ = "^0.12.0"
 [tool.poetry.group.dev.dependencies]
 pytest = "^9.0.1"
 pytest-django = "^4.11.1"
-black = "^25.11.0"
-isort = "^7.0.0"
+
+[tool.black]
+line-length = 88
+target-version = ["py313"]
+
+[tool.isort]
+profile = "black"
+line_length = 88
+multi_line_output = 3
+include_trailing_comma = true
+
+[tool.ruff]
+line-length = 88
+select = ["E", "F", "I", "B", "UP", "SIM", "PLE", "C90"]
+ignore = ["E203", "E501"]
+fix = true
+
+[tool.mypy]
+python_version = "3.13"
+plugins = ["mypy_django_plugin.main"]
+show_error_codes = true
+warn_unused_ignores = true
+warn_redundant_casts = true
+warn_unused_configs = true
+strict_optional = true
+
+[mypy.plugins.django-stubs]
+settings_module = "transaction_reporting.settings"
 
 [build-system]
 requires = ["poetry-core"]
