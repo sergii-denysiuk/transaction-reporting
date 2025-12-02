@@ -44,4 +44,3 @@ htmlcov/
 *.swo
 
 # Keep dependency manifests (pyproject.toml, poetry.lock) and app source included by not listing them here.
-
