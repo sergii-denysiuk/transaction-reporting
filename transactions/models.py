@@ -28,8 +28,5 @@ class Transaction(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
-    class Meta:
-        ordering = ["-year", "transaction_number"]
-
     def __str__(self) -> str:
         return f"{self.transaction_type} {self.transaction_number} ({self.year})"

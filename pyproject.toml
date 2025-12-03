@@ -39,10 +39,27 @@ multi_line_output = 3
 include_trailing_comma = true
 
 [tool.ruff]
-line-length = 88
-select = ["E", "F", "I", "B", "UP", "SIM", "PLE", "C90"]
-ignore = ["E203", "E501"]
-fix = true
+line-length = 88  # Match Black line length for consistency
+fix = true  # Allow Ruff to automatically apply safe fixes
+
+[tool.ruff.lint]
+# Enabled rule categories:
+select = [
+  "E",   # Pycodestyle errors (e.g., indentation, whitespace, line breaks)
+  "F",   # Pyflakes errors (e.g., unused imports, undefined names)
+  "I",   # Import sorting and organization (isort-compatible rules)
+  "B",   # Bugbear: likely bugs and design issues
+  "UP",  # Python upgrade: modernization and use of newer syntax
+  "SIM", # Code simplifications and redundant patterns
+  "PLE", # Pylint errors (high-severity issues)
+  "C90", # McCabe complexity checks (e.g., overly complex functions)
+]
+
+# Ignored rules:
+ignore = [
+  "E203", # Whitespace before ':' (Black-compatible; Black formats like this on purpose)
+  "E501", # Line too long (Black manages line length; rely on it instead of Ruff here)
+]
 
 [tool.mypy]
 python_version = "3.13"

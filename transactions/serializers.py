@@ -26,3 +26,11 @@ class TransactionSerializer(serializers.ModelSerializer):
             "status",
             "year",
         ]
+
+
+class TransactionReportSerializer(serializers.Serializer):
+    row_field = serializers.CharField()
+    column_fields = serializers.ListField(child=serializers.CharField())
+    data = serializers.ListField()
+    column_totals = serializers.ListField()
+    grand_total = serializers.CharField()
