@@ -17,6 +17,19 @@ Inside Docker the app uses:
 - Poetry 2.2
 
 
+## API Overview
+
+All API endpoints are served under the `/api/` prefix.
+For details, see the OpenAPI schema at `/api/schema/`.
+
+Overview of available endpoints:
+- OpenAPI schema: `GET /api/schema/`
+- Transactions list: `GET /api/transactions/`
+  Returns a paginated list of raw transactions with filtering options.
+- Transactions report: `GET /api/transactions/report/`.
+  Returns a pre-aggregated, pivot-style report of transactions based on the selected grouping dimensions.
+
+
 ## Environment Overview
 
 All application code, dependencies, and tests run inside Docker.
@@ -65,7 +78,7 @@ Run these steps once when you start working on the project.
    ```bash
    cp envs/.env.example envs/.env
    ```
-2. Setup development environment (pre-commit, etc):
+2. (For development) Setup development environment (pre-commit, etc):
    ```bash
    make dev-setup
    ```
@@ -80,8 +93,7 @@ Run these steps once when you start working on the project.
    ```
 5. (Optional) Create a superuser
    ```bash
-   make bash
-   python manage.py createsuperuser
+   docker compose exec app python manage.py createsuperuser
    ```
 
 The server is available at: http://localhost:8000

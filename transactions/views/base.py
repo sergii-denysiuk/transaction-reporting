@@ -2,8 +2,51 @@ from django.conf import settings
 from django.db.models import QuerySet
 from rest_framework import generics
 from rest_framework.pagination import PageNumberPagination
+from rest_framework.schemas.openapi import AutoSchema
 
 from ..models import Transaction
+
+
+class TransactionFilterSchema(AutoSchema):
+    def get_filter_parameters(self, path, method):
+        params = super().get_filter_parameters(path, method)
+
+        if method.lower() != "get":
+            return params
+
+        # Only add custom filter params; rely on DRF pagination for page/page_size
+        params.extend(
+            [
+                {
+                    "name": "transaction_type",
+                    "in": "query",
+                    "required": False,
+                    "description": "Filter by transaction type.",
+                    "schema": {
+                        "type": "string",
+                        "enum": list(Transaction.TransactionType.values),
+                    },
+                },
+                {
+                    "name": "status",
+                    "in": "query",
+                    "required": False,
+                    "description": "Filter by payment status.",
+                    "schema": {
+                        "type": "string",
+                        "enum": list(Transaction.Status.values),
+                    },
+                },
+                {
+                    "name": "year",
+                    "in": "query",
+                    "required": False,
+                    "description": "Filter by year (e.g. 2024). Non-numeric values are ignored.",
+                    "schema": {"type": "integer"},
+                },
+            ]
+        )
+        return params
 
 
 class TransactionPagination(PageNumberPagination):

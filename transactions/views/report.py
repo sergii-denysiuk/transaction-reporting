@@ -1,7 +1,6 @@
 from django.db.models import QuerySet
 from rest_framework import generics, status
 from rest_framework.response import Response
-from rest_framework.schemas.openapi import AutoSchema
 
 from ..models import Transaction
 from ..serializers import TransactionReportSerializer
@@ -10,10 +9,10 @@ from ..services import (
     TransactionReportRequest,
     TransactionReportService,
 )
-from .base import TransactionFilterMixin
+from .base import TransactionFilterMixin, TransactionFilterSchema
 
 
-class TransactionReportSchema(AutoSchema):
+class TransactionReportSchema(TransactionFilterSchema):
     def get_filter_parameters(self, path, method):
         params = super().get_filter_parameters(path, method)
         if method.lower() != "get":
@@ -38,27 +37,6 @@ class TransactionReportSchema(AutoSchema):
                     "description": "Optional comma-separated list from transaction_type,status,year.",
                     "schema": {"type": "string"},
                 },
-                {
-                    "name": "transaction_type",
-                    "in": "query",
-                    "required": False,
-                    "description": "Filter by transaction type.",
-                    "schema": {"type": "string"},
-                },
-                {
-                    "name": "status",
-                    "in": "query",
-                    "required": False,
-                    "description": "Filter by payment status.",
-                    "schema": {"type": "string"},
-                },
-                {
-                    "name": "year",
-                    "in": "query",
-                    "required": False,
-                    "description": "Filter by year (e.g. 2024). Non-numeric values are ignored.",
-                    "schema": {"type": "integer"},
-                },
             ]
         )
         return params
@@ -69,6 +47,9 @@ class TransactionReportView(TransactionFilterMixin, generics.GenericAPIView):
     Use this endpoint when you need totals grouped by a chosen row dimension
     (for example, transaction_type or status) and optional column dimensions,
     All monetary values are summed with Decimal and returned as strings.
+
+    Filters on `transaction_type`, `status`, and `year` are applied **before** the aggregation
+    logic, so they affect which transactions are counted in the report.
     """
 
     schema = TransactionReportSchema()
@@ -120,11 +101,9 @@ class TransactionReportView(TransactionFilterMixin, generics.GenericAPIView):
             row_field=ReportDimension(row_field_str),
             column_fields=[ReportDimension(field) for field in column_field_strs],
         )
+        qs = self.get_filtered_queryset()
         service = TransactionReportService()
-        result = service.build_report(
-            self.get_filtered_queryset(),
-            report_request,
-        )
+        result = service.build_report(qs, report_request)
         serializer = self.get_serializer(
             {
                 "row_field": result.row_field,

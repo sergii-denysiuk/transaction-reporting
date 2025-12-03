@@ -1,52 +1,9 @@
 from django.db.models import QuerySet
 from rest_framework import generics
-from rest_framework.schemas.openapi import AutoSchema
 
 from ..models import Transaction
 from ..serializers import TransactionSerializer
-from .base import TransactionFilterMixin, TransactionPagination
-
-
-class TransactionListSchema(AutoSchema):
-    def get_filter_parameters(self, path, method):
-        params = super().get_filter_parameters(path, method)
-
-        if method.lower() != "get":
-            return params
-
-        # Only add custom filter params; rely on DRF pagination for page/page_size
-        params.extend(
-            [
-                {
-                    "name": "transaction_type",
-                    "in": "query",
-                    "required": False,
-                    "description": "Filter by transaction type.",
-                    "schema": {
-                        "type": "string",
-                        "enum": list(Transaction.TransactionType.values),
-                    },
-                },
-                {
-                    "name": "status",
-                    "in": "query",
-                    "required": False,
-                    "description": "Filter by payment status.",
-                    "schema": {
-                        "type": "string",
-                        "enum": list(Transaction.Status.values),
-                    },
-                },
-                {
-                    "name": "year",
-                    "in": "query",
-                    "required": False,
-                    "description": "Filter by year (e.g. 2024). Non-numeric values are ignored.",
-                    "schema": {"type": "integer"},
-                },
-            ]
-        )
-        return params
+from .base import TransactionFilterMixin, TransactionFilterSchema, TransactionPagination
 
 
 class TransactionListView(TransactionFilterMixin, generics.ListAPIView):
@@ -56,7 +13,7 @@ class TransactionListView(TransactionFilterMixin, generics.ListAPIView):
     using page and page_size query parameters.
     """
 
-    schema = TransactionListSchema()
+    schema = TransactionFilterSchema()
     serializer_class = TransactionSerializer
     pagination_class = TransactionPagination
 
