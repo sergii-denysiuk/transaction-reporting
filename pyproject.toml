@@ -10,6 +10,9 @@ package-mode = false
 python = "^3.13"
 Django = "^5.2.8"
 djangorestframework = "^3.16"
+inflection = "^0.5.1"  # for DRF get_schema_view()
+uritemplate = "^4.2.0"  # for DRF get_schema_view()
+pyyaml = "^6.0.3"  # for DRF get_schema_view()
 psycopg = {extras = ["binary"], version = "3.3.0"}
 django-environ = "^0.12.0"
 

@@ -1,18 +1,60 @@
 from django.db.models import QuerySet
 from rest_framework import generics
+from rest_framework.schemas.openapi import AutoSchema
 
 from .models import Transaction
 from .serializers import TransactionSerializer
 
 
+class TransactionListSchema(AutoSchema):
+    def get_filter_parameters(self, path, method):
+        params = super().get_filter_parameters(path, method)
+
+        if method.lower() != "get":
+            return params
+
+        params.extend(
+            [
+                {
+                    "name": "transaction_type",
+                    "in": "query",
+                    "required": False,
+                    "description": "Filter by transaction type.",
+                    "schema": {
+                        "type": "string",
+                        "enum": list(Transaction.TransactionType.values),
+                    },
+                },
+                {
+                    "name": "status",
+                    "in": "query",
+                    "required": False,
+                    "description": "Filter by payment status.",
+                    "schema": {
+                        "type": "string",
+                        "enum": list(Transaction.Status.values),
+                    },
+                },
+                {
+                    "name": "year",
+                    "in": "query",
+                    "required": False,
+                    "description": "Filter by year (e.g. 2024). Non-numeric values are ignored.",
+                    "schema": {"type": "integer"},
+                },
+            ]
+        )
+        return params
+
+
 class TransactionListView(generics.ListAPIView):
     """List raw transactions with optional filtering.
-
     Supports filtering by transaction_type, status, and year via
     query parameters combined with AND logic.
     """
 
     serializer_class = TransactionSerializer
+    schema = TransactionListSchema()
 
     def get_queryset(self) -> QuerySet[Transaction]:
         queryset = Transaction.objects.all().order_by("-year", "transaction_number")
