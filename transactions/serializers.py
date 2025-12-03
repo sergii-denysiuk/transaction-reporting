@@ -1,0 +1,15 @@
+from rest_framework import serializers
+
+from .models import Transaction
+
+
+class TransactionIngestSerializer(serializers.Serializer):
+    transaction_type = serializers.ChoiceField(
+        choices=Transaction.TransactionType.choices
+    )
+    status = serializers.ChoiceField(
+        choices=Transaction.Status.choices,
+    )
+    transaction_number = serializers.CharField(max_length=64)
+    amount = serializers.DecimalField(max_digits=12, decimal_places=2)
+    year = serializers.IntegerField(min_value=1900, max_value=2100)

@@ -8,15 +8,27 @@ APIs for retrieving and aggregating transaction data.
 Tools required on the host machine:
 - Docker
 - Docker Compose
-- Python 3.* (only for creating a local virtualenv for pre-commit)
+- Python 3.* (only to create `.venv` for `pre-commit`)
 
-All application code, dependencies, and tests run fully inside Docker.
-Tools used by the application:
+Inside Docker the app uses:
 - Python 3.13
 - Django 5.x
 - PostgreSQL 18
 - Poetry 2.2
-- pre-commit
+
+
+## Environment Overview
+
+All application code, dependencies, and tests run inside Docker.
+The only exception is `pre-commit` and QA tooling, which run on the host in `.venv`.
+
+The `.venv` is created automatically by `make dev-setup` and is then used by `Makefile` targets
+to run QA commands on the host (e.g. `make qa`, `make format`, `make typecheck`).
+
+In short:
+> **Host = pre-commit + QA tooling.  Docker = app, tests, and database.**
+
+This keeps runtime/tests reproducible while keeping git hooks fast and host setup minimal.
 
 
 ## Project Structure
@@ -73,6 +85,24 @@ Run these steps once when you start working on the project.
    ```
 
 The server is available at: http://localhost:8000
+
+
+## Sample Data / Seeding
+
+To load sample transaction data into the database, a custom management command
+reads from a JSON fixture and performs validation plus bulk insert.
+
+Fixture path (default): `transactions/fixtures/transactions.json`
+
+Run the command inside Docker:
+```bash
+docker compose exec app python manage.py load_transactions
+```
+
+Optionally, you can point it at a different JSON file:
+```bash
+docker compose exec app python manage.py load_transactions --path /app/path/to/your.json
+```
 
 
 ## Development
@@ -161,7 +191,7 @@ This uses the same dependencies, environment, and database as the actual applica
 2. Run checks (optional):
    ```bash
    make qa
-   ````
+   ```
 3. Commit changes  - pre-commit runs automatically.
 4. Run tests:
    ```bash
