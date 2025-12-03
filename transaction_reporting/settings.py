@@ -140,3 +140,8 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 REST_FRAMEWORK = {
     "DEFAULT_SCHEMA_CLASS": "rest_framework.schemas.openapi.AutoSchema",
 }
+
+# Pagination defaults for API views
+PAGINATION_MIN_PAGE_SIZE = 1
+PAGINATION_PAGE_SIZE = 10
+PAGINATION_MAX_PAGE_SIZE = 100

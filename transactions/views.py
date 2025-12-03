@@ -1,5 +1,7 @@
+from django.conf import settings
 from django.db.models import QuerySet
 from rest_framework import generics
+from rest_framework.pagination import PageNumberPagination
 from rest_framework.schemas.openapi import AutoSchema
 
 from .models import Transaction
@@ -13,6 +15,7 @@ class TransactionListSchema(AutoSchema):
         if method.lower() != "get":
             return params
 
+        # Only add custom filter params; rely on DRF pagination for page/page_size
         params.extend(
             [
                 {
@@ -47,14 +50,22 @@ class TransactionListSchema(AutoSchema):
         return params
 
 
+class TransactionPagination(PageNumberPagination):
+    max_page_size = settings.PAGINATION_MAX_PAGE_SIZE
+    page_size = settings.PAGINATION_PAGE_SIZE
+    page_size_query_param = "page_size"
+
+
 class TransactionListView(generics.ListAPIView):
     """List raw transactions with optional filtering.
     Supports filtering by transaction_type, status, and year via
-    query parameters combined with AND logic.
+    query parameters combined with AND logic. Results are paginated
+    using page and page_size query parameters.
     """
 
-    serializer_class = TransactionSerializer
     schema = TransactionListSchema()
+    serializer_class = TransactionSerializer
+    pagination_class = TransactionPagination
 
     def get_queryset(self) -> QuerySet[Transaction]:
         queryset = Transaction.objects.all().order_by("-year", "transaction_number")
