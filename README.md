@@ -235,3 +235,11 @@ Allowed types:
 - `docs` - documentation updates
 - `style` - formatting only
 - `chore` - config/CI/dependency updates
+
+
+## TODOs
+- Replace custom `transaction_factory` with `factory_boy` for test data factories.
+- Generate API schema automatically on changes (e.g. git post-hook) and link the generated schema file here in the API section
+- Consider requiring a dedicated Python virtualenv for local tooling and installing all dev deps into it; simplify `Makefile` targets accordingly.
+- Evaluate using `drf-spectacular` for API specs and schema generation.
+- Add deployment configuration and update CI to build and deploy.
