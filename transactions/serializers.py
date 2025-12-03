@@ -13,3 +13,16 @@ class TransactionIngestSerializer(serializers.Serializer):
     transaction_number = serializers.CharField(max_length=64)
     amount = serializers.DecimalField(max_digits=12, decimal_places=2)
     year = serializers.IntegerField(min_value=1900, max_value=2100)
+
+
+class TransactionSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Transaction
+        fields = [
+            "id",
+            "transaction_type",
+            "transaction_number",
+            "amount",
+            "status",
+            "year",
+        ]
