@@ -8,7 +8,7 @@ package-mode = false
 
 [tool.poetry.dependencies]
 python = "^3.13"
-Django = "^5.2.8"
+Django = "^5.2.12"
 djangorestframework = "^3.16"
 inflection = "^0.5.1"  # for DRF get_schema_view()
 uritemplate = "^4.2.0"  # for DRF get_schema_view()
